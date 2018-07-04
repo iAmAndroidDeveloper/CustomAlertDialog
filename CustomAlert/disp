@@ -1,0 +1,47 @@
+  private void selectImage() {
+      final CharSequence[] items = {"Take Photo", "Choose from Library",
+                "Cancel"};
+
+        TextView title = new TextView(getActivity());
+        title.setText("Add Photo!");
+        title.setBackgroundColor(getActivity().getResources().getColor(R.color.blue));
+        title.setPadding(10, 15, 15, 15);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(Color.WHITE);
+        title.setTextSize(22);
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setCustomTitle(title);
+        // builder.setTitle("Add Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("Take Photo")) {
+
+                    Intent intents = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    File imagesFolder = new File(Environment.getExternalStorageDirectory(), "*/*");
+                    imagesFolder.mkdirs(); // <----
+                    File image = new File(imagesFolder, "*/*");
+                    fileUri = Uri.fromFile(image);
+
+                    intents.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+
+                    // start the image capture Intent
+                    startActivityForResult(intents, PICK_IMAGE_CAMERA);
+
+                } else if (items[item].equals("Choose from Library")) {
+
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("*/*");
+                    startActivityForResult(intent, PICK_IMAGE_GALLERY);
+
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+        
+ }
